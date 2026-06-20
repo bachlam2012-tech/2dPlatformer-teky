@@ -7,6 +7,8 @@ public class Item : MonoBehaviour
     [SerializeField] private string itemName;
     [SerializeField] private int quantity;
     [SerializeField] private Sprite sprite;
+    [TextArea]
+    [SerializeField] private string itemDescription;
     private InventoryManager inventoryManager;
     // Start is called before the first frame update
     void Start()
@@ -23,9 +25,24 @@ public class Item : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            inventoryManager.AddItem(itemName, quantity, sprite);
+            inventoryManager.AddItem(itemName, quantity, sprite, itemDescription);
             Debug.Log("item");
             Destroy(gameObject);
+        }
+    }
+    void OCollisionEnter2D(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            int leftOverItem = inventoryManager.AddItem(itemName, quantity, sprite, itemDescription);
+            if (leftOverItem <= 0)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                quantity = leftOverItem;
+            }
         }
     }
 }

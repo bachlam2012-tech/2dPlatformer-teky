@@ -35,17 +35,7 @@ public class InventoryManager : MonoBehaviour
             CanOpen = true;
         }
     }
-    public void AddItem(string itemName, int quantity, Sprite itemSprite)
-    {
-        for (int i = 0; i < itemSlots.Length; i++)
-        {
-            if (itemSlots[i].isFull == false)
-            {
-                itemSlots[i].AddItem(itemName, quantity, itemSprite);
-                return;
-            }
-        }
-    }
+
     public void DeselectedAllSlots()
     {
         for (int i = 0; i < itemSlots.Length; i++)
@@ -53,5 +43,19 @@ public class InventoryManager : MonoBehaviour
             itemSlots[i].selectedShader.SetActive(false);
             itemSlots[i].thisItemSelected = false;
         }
+    }
+    public int AddItem(string itemName, int quantity, Sprite itemSprite, string itemDescription)
+    {
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if ((itemSlots[i].isFull == false && itemSlots[i].itemName == itemName) || itemSlots[i].quantity == 0)
+            {
+                int leftOverItems = itemSlots[i].AddItem(itemName, quantity, itemSprite, itemDescription);
+                if (leftOverItems > 0)
+                    leftOverItems = AddItem(itemName, leftOverItems, itemSprite, itemDescription);
+                return leftOverItems;
+            }
+        }
+        return quantity;
     }
 }
