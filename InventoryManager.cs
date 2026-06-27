@@ -7,6 +7,7 @@ public class InventoryManager : MonoBehaviour
     public bool CanOpen;
     public GameObject UI;
     public ItemSlot[] itemSlots;
+    public ItemSO[] itemSOs;
     // Start is called before the first frame update
     void Start()
     {
@@ -57,5 +58,23 @@ public class InventoryManager : MonoBehaviour
             }
         }
         return quantity;
+    }
+    public void UseItem(string itemName)
+    {
+        for (int i = 0; i < itemSOs.Length; i++)
+        {
+            if (itemSOs[i].itemName == itemName)
+            {
+                itemSOs[i].UseItem();
+            }
+            for (int j = 0; j < itemSlots.Length; j++)
+            {
+                if (itemSlots[j].itemName == itemName)
+                {
+                    itemSlots[j].RemoveOneItem();
+                    return;
+                }
+            }
+        }
     }
 }

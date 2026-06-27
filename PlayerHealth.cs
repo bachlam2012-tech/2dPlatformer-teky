@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
@@ -17,6 +18,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float knockbackFroceY = 5f;
     [SerializeField] private float knockbackTime = 0.2f;
     private Player player;
+    public HealthBar healthBar;
 
     void Start()
     {
@@ -25,6 +27,7 @@ public class PlayerHealth : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         player = GetComponent<Player>();
+        healthBar.SetMaxHealth(maxHealth);
     }
 
     // Update is called once per frame
@@ -46,6 +49,8 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(int damage, Vector2 enemyPosision)
     {
         currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        healthBar.SetHealth(currentHealth);
         Vector2 hitDirection = (transform.position.x - enemyPosision.x > 0) ? Vector2.right : Vector2.left;
         StartCoroutine(Knockback(hitDirection));
 
@@ -68,6 +73,7 @@ public class PlayerHealth : MonoBehaviour
 
         playerRespawn.respawn();
         currentHealth = maxHealth;
+        healthBar.SetHealth(currentHealth);
 
         GetComponent<SpriteRenderer>().enabled = true;
         GetComponent<Player>().enabled = true;
@@ -83,5 +89,12 @@ public class PlayerHealth : MonoBehaviour
         rb.AddForce(new Vector2(hitDirection.x * knockbackFroceX, knockbackFroceY), ForceMode2D.Impulse);
         yield return new WaitForSeconds(knockbackTime);
         player.enabled = true;
+    }
+    public void ChangeHealth(int amount)
+    {
+        Debug.Log("test");
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        healthBar.SetHealth(currentHealth);
     }
 }

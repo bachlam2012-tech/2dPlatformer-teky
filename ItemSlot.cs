@@ -49,6 +49,10 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
 
     private void OnLeftClick()
     {
+        if (thisItemSelected)
+        {
+            inventoryManager.UseItem(itemName);
+        }
         inventoryManager.DeselectedAllSlots();
         selectedShader.SetActive(true);
         thisItemSelected = true;
@@ -89,5 +93,31 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         quantityText.text = this.quantity.ToString();
         quantityText.enabled = true;
         return 0;
+    }
+    public void RemoveOneItem()
+    {
+        quantity--;
+
+        if (quantity > 0)
+        {
+            quantityText.text = quantity.ToString();
+        }
+        else
+        {
+            // Xóa dữ liệu của slot
+            itemName = "";
+            itemDescription = "";
+            quantity = 0;
+            isFull = false;
+
+            itemImage.sprite = null;
+            itemImage.enabled = false;
+
+            quantityText.text = "";
+            quantityText.enabled = false;
+
+            selectedShader.SetActive(false);
+            thisItemSelected = false;
+        }
     }
 }
