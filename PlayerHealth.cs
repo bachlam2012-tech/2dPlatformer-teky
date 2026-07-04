@@ -92,7 +92,7 @@ public class PlayerHealth : MonoBehaviour
     }
     public void ChangeHealth(int amount)
     {
-        Debug.Log("test");
+        Debug.Log(amount);
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         healthBar.SetHealth(currentHealth);

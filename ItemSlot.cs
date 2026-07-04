@@ -30,6 +30,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
     public bool thisItemSelected;
     public int maxNumberOfItem;
     private InventoryManager inventoryManager;
+    public Sprite emptySprite;
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
@@ -49,16 +50,47 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
 
     private void OnLeftClick()
     {
+        // if (thisItemSelected)
+        // {
+        //     inventoryManager.UseItem(itemName);
+        // }
+        // inventoryManager.DeselectedAllSlots();
+        // selectedShader.SetActive(true);
+        // thisItemSelected = true;
+        // itemDescriptionImage.sprite = itemSprite;
+        // itemDescriptionNameText.text = itemName;
+        // itemDescriptionText.text = itemDescription;
         if (thisItemSelected)
         {
-            inventoryManager.UseItem(itemName);
+            bool usable = inventoryManager.UseItem(itemName);
+            if (usable)
+            {
+                this.quantity -= 1;
+                quantityText.text = this.quantity.ToString();
+                if (this.quantity <= 0)
+                {
+                    EmptySlot();
+                }
+            }
+
         }
-        inventoryManager.DeselectedAllSlots();
-        selectedShader.SetActive(true);
-        thisItemSelected = true;
-        itemDescriptionImage.sprite = itemSprite;
-        itemDescriptionNameText.text = itemName;
-        itemDescriptionText.text = itemDescription;
+        else
+        {
+            inventoryManager.DeselectedAllSlots();
+            selectedShader.SetActive(true);
+            thisItemSelected = true;
+            itemDescriptionNameText.text = itemName;
+            itemDescriptionText.text = itemDescription;
+            itemDescriptionImage.sprite = itemSprite;
+            if (itemDescriptionImage.sprite == null)
+            {
+                itemDescriptionImage.sprite = emptySprite;
+            }
+        }
+        if (itemDescriptionImage.sprite == null)
+        {
+            itemDescriptionImage.sprite = emptySprite;
+        }
     }
 
     void Start()
@@ -119,5 +151,14 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
             selectedShader.SetActive(false);
             thisItemSelected = false;
         }
+    }
+    private void EmptySlot()
+    {
+        quantityText.enabled = false;
+        itemImage.sprite = emptySprite;
+        itemDescriptionNameText.text = "";
+        itemDescriptionText.text = "";
+        itemDescriptionImage.sprite = emptySprite;
+
     }
 }
